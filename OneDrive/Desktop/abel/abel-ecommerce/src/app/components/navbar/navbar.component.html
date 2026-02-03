@@ -1,0 +1,32 @@
+<mat-toolbar color="primary" class="navbar">
+  <div class="navbar-content">
+    <div class="navbar-brand">
+      <mat-icon class="brand-icon">shopping_bag</mat-icon>
+      <span class="brand-text" routerLink="/">Abel Store</span>
+    </div>
+
+    <div class="navbar-links">
+      <a mat-button routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+        <mat-icon>home</mat-icon>
+        <span class="link-text">Home</span>
+      </a>
+      <a mat-button routerLink="/products" routerLinkActive="active">
+        <mat-icon>storefront</mat-icon>
+        <span class="link-text">Products</span>
+      </a>
+      <a mat-button routerLink="/about" routerLinkActive="active">
+        <mat-icon>info</mat-icon>
+        <span class="link-text">About</span>
+      </a>
+    </div>
+
+    <div class="navbar-actions">
+      <a mat-icon-button routerLink="/cart" class="cart-button">
+        <mat-icon matBadge="{{ cartCount }}" matBadgeColor="warn" matBadgeSize="medium">
+          shopping_cart
+        </mat-icon>
+        <span class="cart-label">Cart</span>
+      </a>
+    </div>
+  </div>
+</mat-toolbar>

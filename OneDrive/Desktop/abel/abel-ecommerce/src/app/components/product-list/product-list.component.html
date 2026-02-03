@@ -1,0 +1,111 @@
+<div class="product-list-container">
+  <div class="filters-section">
+    <h2>Filters</h2>
+
+    <mat-form-field appearance="outline" class="search-field">
+      <mat-label>Search Products</mat-label>
+      <input matInput [(ngModel)]="searchTerm" placeholder="Search by name or description">
+      <mat-icon matSuffix>search</mat-icon>
+    </mat-form-field>
+
+    <div class="category-filter">
+      <h3>Category</h3>
+      <mat-chip-set>
+        <button mat-stroked-button
+          (click)="selectedCategory = 'all'"
+          [class.active]="selectedCategory === 'all'"
+          class="category-chip">
+          All Products
+        </button>
+        <button mat-stroked-button
+          *ngFor="let category of categories"
+          (click)="selectedCategory = category.id"
+          [class.active]="selectedCategory === category.id"
+          class="category-chip">
+          {{ category.name }}
+        </button>
+      </mat-chip-set>
+    </div>
+
+    <div class="stock-filter">
+      <mat-checkbox [(ngModel)]="inStockOnly">In Stock Only</mat-checkbox>
+    </div>
+
+    <button mat-raised-button color="accent" (click)="resetFilters()" class="reset-btn">
+      <mat-icon>refresh</mat-icon>
+      Reset Filters
+    </button>
+  </div>
+
+  <div class="products-section">
+    <div class="section-header">
+      <h2>Our Products</h2>
+      <p class="product-count">
+        Showing {{ (products | filterByCategory: selectedCategory | searchProducts: searchTerm | inStock: inStockOnly)?.length }} products
+      </p>
+    </div>
+
+    <mat-grid-list [cols]="cols" rowHeight="450px" gutterSize="20px" class="products-grid">
+      <mat-grid-tile
+        *ngFor="let product of products | filterByCategory: selectedCategory | searchProducts: searchTerm | inStock: inStockOnly"
+        [appOutOfStock]="!product.inStock">
+        <mat-card class="product-card" [appHighlightDiscount]="product.discount">
+          <div class="product-image-container">
+            <img [src]="product.image" [alt]="product.name" class="product-image">
+            <div class="discount-badge" *ngIf="product.discount">
+              -{{ product.discount }}%
+            </div>
+            <div class="stock-badge" *ngIf="!product.inStock">
+              Out of Stock
+            </div>
+          </div>
+
+          <mat-card-content class="product-content">
+            <h3 class="product-name">{{ product.name }}</h3>
+            <p class="product-description">{{ product.description }}</p>
+
+            <div class="product-meta">
+              <div class="rating-stars">
+                <span *ngFor="let i of [1,2,3,4,5]" class="star" [class.filled]="i <= product.rating">★</span>
+              </div>
+              <span class="review-count">({{ product.reviews }} reviews)</span>
+            </div>
+
+            <div class="price-section">
+              <div class="price">
+                <span class="current-price" [appPriceHighlight]="product.price">${{ product.price.toFixed(2) }}</span>
+                <span class="original-price" *ngIf="product.originalPrice">
+                  ${{ product.originalPrice.toFixed(2) }}
+                </span>
+              </div>
+            </div>
+
+            <button
+              mat-raised-button
+              color="primary"
+              [disabled]="!product.inStock"
+              (click)="addToCart(product)"
+              class="add-to-cart-btn">
+              <mat-icon>shopping_cart</mat-icon>
+              {{ product.inStock ? 'Add to Cart' : 'Out of Stock' }}
+            </button>
+
+            <a
+              [routerLink]="['/product', product.id]"
+              mat-button
+              color="accent"
+              class="details-btn">
+              <mat-icon>info</mat-icon>
+              View Details
+            </a>
+          </mat-card-content>
+        </mat-card>
+      </mat-grid-tile>
+    </mat-grid-list>
+
+    <div class="no-products" *ngIf="(products | filterByCategory: selectedCategory | searchProducts: searchTerm | inStock: inStockOnly)?.length === 0">
+      <mat-icon>inventory_2</mat-icon>
+      <p>No products found matching your filters.</p>
+    </div>
+  </div>
+</div>
